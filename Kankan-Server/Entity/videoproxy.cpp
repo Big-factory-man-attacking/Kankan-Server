@@ -1,5 +1,5 @@
 #include "videoproxy.h"
-#include "videobroker.h"
+#include "../SqlCon/videobroker.h"
 
 VideoProxy::VideoProxy(std::string &id) : m_id{id}
 {

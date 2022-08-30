@@ -1,5 +1,6 @@
 #include "server.h"
 #include <iostream>
+#include "ThreadPool/threadpool.h"
 
 extern "C" {
     #include <sys/socket.h>
@@ -7,11 +8,12 @@ extern "C" {
     #include <netinet/in.h>
     #include <sys/types.h>
     #include <fcntl.h>
+    #include <unistd.h>
 };
 
-Server::Server(int port) : m_port(port), m_epoller(new epoller())
+Server::Server(int port, int threadNums) : m_port(port), m_epoller(new epoller()), m_threadpool(new ThreadPool(threadNums))
 {
-
+    initSocket();
 }
 
 void Server::start()
@@ -24,9 +26,9 @@ void Server::start()
             if (sockfd == listenfd) {
                 dealListen(sockfd);
             } else if (event[i].events & EPOLLIN) {
-
+                dealRead(event[i].data.fd);
             } else if (event[i].events & EPOLLOUT) {
-
+                dealWrite(event[i].data.fd);
             }
         }
     }
@@ -34,7 +36,7 @@ void Server::start()
 
 void Server::initSocket()
 {
-    if (m_port < 1024 && m_port > 65535) {
+    if (m_port < 1024 || m_port > 65535) {
         std::cout << "非法端口号" << std::endl;
     }
 
@@ -98,12 +100,32 @@ int Server::setNonBlocking(int fd)
     return old_option;
 }
 
-void Server::dealRead()
+void Server::dealRead(int fd)
+{
+    if (fd < 0) {}
+//    m_threadpool->enqueue([this, fd]{this->onRead(fd);});
+    m_threadpool->AddTask(std::bind(&Server::onRead, this, fd));
+}
+
+void Server::dealWrite(int fd)
 {
 
 }
 
-void Server::dealWrite()
+void Server::onRead(int fd)
+{
+    //清空缓冲区
+    bzero(&readBuffer, sizeof(readBuffer));
+
+    int n = read(fd, readBuffer, 1024);
+
+    std::cout << "receive" << readBuffer << std::endl;
+    nlohmann::json json = nlohmann::json::parse(std::string(readBuffer));
+
+    _users[fd].dealPost(json);
+}
+
+void Server::onWrite(int fd)
 {
 
 }

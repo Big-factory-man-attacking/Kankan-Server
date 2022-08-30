@@ -3,6 +3,8 @@ CONFIG += console c++17
 CONFIG -= app_bundle
 CONFIG -= qt
 
+LIBS += -lpthread -lmariadbcpp
+
 SOURCES += \
         Server/epoller.cpp \
         Server/server.cpp \
@@ -12,18 +14,16 @@ SOURCES += \
         SqlCon/relationalbroker.cpp \
         SqlCon/videobroker.cpp \
         ThreadPool/threadpool.cpp \
-        entity/comment.cpp \
-        entity/commentproxy.cpp \
-        entity/main.cpp \
-        entity/manuscript.cpp \
-        entity/manuscriptproxy.cpp \
-        entity/netizen.cpp \
-        entity/netizenproxy.cpp \
-        entity/video.cpp \
-        entity/videoproxy.cpp \
+        Entity/comment.cpp \
+        Entity/commentproxy.cpp \
+        Entity/manuscript.cpp \
+        Entity/manuscriptproxy.cpp \
+        Entity/netizen.cpp \
+        Entity/netizenproxy.cpp \
+        Entity/video.cpp \
+        Entity/videoproxy.cpp \
         main.cpp \
-        tcpsocket.cpp \
-        videosocialcontrol.cpp
+        Controller/videosocialcontrol.cpp
 
 HEADERS += \
     Server/epoller.h \
@@ -34,17 +34,16 @@ HEADERS += \
     SqlCon/relationalbroker.h \
     SqlCon/videobroker.h \
     ThreadPool/threadpool.h \
-    entity/comment.h \
-    entity/commentinterface.h \
-    entity/commentproxy.h \
-    entity/manuscript.h \
-    entity/manuscriptinterface.h \
-    entity/manuscriptproxy.h \
-    entity/netizen.h \
-    entity/netizeninterface.h \
-    entity/netizenproxy.h \
-    entity/video.h \
-    entity/videointerface.h \
+    Entity/comment.h \
+    Entity/commentinterface.h \
+    Entity/commentproxy.h \
+    Entity/manuscript.h \
+    Entity/manuscriptinterface.h \
+    Entity/manuscriptproxy.h \
+    Entity/netizen.h \
+    Entity/netizeninterface.h \
+    Entity/netizenproxy.h \
+    Entity/video.h \
+    Entity/videointerface.h \
     entity/videoproxy.h \
-    tcpsocket.h \
-    videosocialcontrol.h
+    Controller/videosocialcontrol.h

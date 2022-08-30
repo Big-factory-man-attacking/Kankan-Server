@@ -12,7 +12,7 @@ RelationalBroker::RelationalBroker()
 
         //Configure Connection
         sql::SQLString url("jdbc:mariadb://127.0.0.1:3306/Kankan");
-        sql::Properties properties({{"user", "root"}, {"password", "root"}});
+        sql::Properties properties({{"user", "zc"}, {"password", "20010202"}});
 
         //建立连接
         conn= std::unique_ptr<sql::Connection>(driver->connect(url, properties));

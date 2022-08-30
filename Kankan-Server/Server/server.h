@@ -1,14 +1,20 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#include "videosocialcontrol.h"
+#include "Controller/videosocialcontrol.h"
 #include <unordered_map>
 #include "epoller.h"
+#include "../ThreadPool/threadpool.h"
+
+extern "C" {
+    #include <arpa/inet.h>
+};
+
 
 class Server
 {
 public:
-    Server(int port);
+    Server(int port, int threadNums);
 
     void start();
 
@@ -18,16 +24,22 @@ public:
     void addClient(int connfd);
     int setNonBlocking(int fd);
 
-    void dealRead();
-    void dealWrite();
+    void dealRead(int fd);
+    void dealWrite(int fd);
+
+    void onRead(int fd);
+    void onWrite(int fd);
 
 private:
+    char readBuffer[1025];
+    char writeBuffer[1025];
+
     struct sockaddr_in m_serveraddr;
     int m_port;
-
     int listenfd;
 
     std::unique_ptr<epoller> m_epoller;
+    std::unique_ptr<ThreadPool> m_threadpool;
 
     std::unordered_map<int, VideoSocialControl> _users;
 };

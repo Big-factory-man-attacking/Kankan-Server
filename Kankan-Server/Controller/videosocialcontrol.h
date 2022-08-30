@@ -6,10 +6,6 @@
 #include <vector>
 #include "json.hpp"
 
-extern "C" {
-    #include <arpa/inet.h>
-};
-
 class Netizen;
 
 class VideoSocialControl
@@ -58,9 +54,7 @@ public:
     // 删除稿件
     void deleteManuscript(nlohmann::json js);
 
-    nlohmann::json handle(nlohmann::json h);
-private:
-    struct sockaddr_in cliaddr;
+    nlohmann::json dealPost(nlohmann::json h);
 };
 
 #endif // VIDEOSOCIALCONTROL_H
