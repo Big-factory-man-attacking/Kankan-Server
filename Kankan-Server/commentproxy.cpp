@@ -1,5 +1,5 @@
 #include "commentproxy.h"
-#include "../SqlCon/commentbroker.h"
+#include "commentbroker.h"
 
 CommentProxy::CommentProxy(std::string &id) : m_id{id}
 {

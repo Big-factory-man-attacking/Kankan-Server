@@ -2,7 +2,7 @@
 #define MANUSCRIPTBROKER_H
 
 #include "relationalbroker.h"
-#include "../Entity/manuscript.h"
+#include "manuscript.h"
 
 class ManuscriptBroker : public RelationalBroker
 {

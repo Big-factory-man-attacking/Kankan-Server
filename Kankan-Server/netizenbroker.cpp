@@ -1,5 +1,5 @@
 #include "netizenbroker.h"
-#include "../Entity/netizen.h"
+#include "netizen.h"
 #include <iostream>
 
 NetizenBroker* NetizenBroker::m_netizenBroker = nullptr;

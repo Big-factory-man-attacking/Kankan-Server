@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 #include "json.hpp"
+#include "tcpsocket.h"
 
 class Netizen;
 
@@ -54,7 +55,7 @@ public:
     // 删除稿件
     void deleteManuscript(nlohmann::json js);
 
-    nlohmann::json dealPost(nlohmann::json h);
+    nlohmann::json handle(nlohmann::json h);
 };
 
 #endif // VIDEOSOCIALCONTROL_H

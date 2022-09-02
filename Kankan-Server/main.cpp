@@ -1,15 +1,16 @@
 #include <iostream>
-#include "Server/server.h"
+#include "videosocialcontrol.h"
+#include "tcpsocket.h"
 
 using namespace std;
 
 int main()
 {
-    // 端口为9877， 线程池线程数为10
-    Server server(9877,10);
+//    VideoSocialControl v;
+//    v.login("ce20e992-2530-4d7f-abc0-801879c5d3cb", "zhuyoucheng");
 
-    // 启动服务器
-    server.start();
+    TcpSocket t;
+    t.connect();
 
     return 0;
 }

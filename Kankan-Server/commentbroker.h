@@ -2,7 +2,7 @@
 #define COMMENTBROKER_H
 
 #include "relationalbroker.h"
-#include "../Entity/comment.h"
+#include "comment.h"
 
 class CommentBroker : public RelationalBroker
 {

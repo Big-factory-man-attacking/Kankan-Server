@@ -1,5 +1,5 @@
 #include "netizenproxy.h"
-#include "../SqlCon/netizenbroker.h"
+#include "netizenbroker.h"
 #include "netizen.h"
 #include <iostream>
 

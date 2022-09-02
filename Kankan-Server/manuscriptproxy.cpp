@@ -1,6 +1,6 @@
 #include "manuscriptproxy.h"
 #include <vector>
-#include "../SqlCon/manuscriptbroker.h"
+#include "manuscriptbroker.h"
 #include <iostream>
 
 ManuscriptProxy::ManuscriptProxy(std::string id) :

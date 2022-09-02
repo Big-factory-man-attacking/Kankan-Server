@@ -1,13 +1,13 @@
-#include "Controller/videosocialcontrol.h"
-#include "Entity/netizen.h"
-#include "SqlCon/netizenbroker.h"
+#include "videosocialcontrol.h"
+#include "netizen.h"
+#include "netizenbroker.h"
 #include <iostream>
 #include <utility>
 #include <time.h>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
-#include "SqlCon/manuscriptbroker.h"
+#include "manuscriptbroker.h"
 
 extern "C" {
     #include <libavutil/timestamp.h>
@@ -176,7 +176,7 @@ void VideoSocialControl::deleteManuscript(json js)
     netizenProxy->deleteManuscript(manuscriptId);
 }
 
-json VideoSocialControl::dealPost(json h)
+json VideoSocialControl::handle(json h)
 {
     std::string s = h["type"].get<std::string>();
     json data = h["data"];
