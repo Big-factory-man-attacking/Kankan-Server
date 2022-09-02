@@ -5,7 +5,6 @@
 #include <memory>
 #include <vector>
 #include "json.hpp"
-#include "tcpsocket.h"
 
 class Netizen;
 
@@ -14,10 +13,9 @@ class VideoSocialControl
 public:
     VideoSocialControl();
 
-
     // 注册
     // password:用户设置的密码
-    void registerAccount(nlohmann::json js);
+    nlohmann::json registerAccount(nlohmann::json js);
 
     // 登录
     // id:用户输入的帐号
@@ -33,29 +31,29 @@ public:
     // 关注
     // fanId:当前使用者id
     // followerId:被关注者id
-    void focusOn(nlohmann::json js);
+    nlohmann::json focusOn(nlohmann::json js);
 
     // 取关
     // fanId:当前使用者id
     // followerId:被关注者id
-    void takeOff(nlohmann::json js);
+    nlohmann::json takeOff(nlohmann::json js);
 
     // 修改用户头像
-    void modifyHeadportrait(nlohmann::json js);
+    nlohmann::json modifyHeadportrait(nlohmann::json js);
 
     // 修改用户昵称
-    void modifyNickname(nlohmann::json js);
+    nlohmann::json modifyNickname(nlohmann::json js);
 
     // 修改用户密码
     nlohmann::json modifyPassword(nlohmann::json js);
 
     // 修改稿件信息
-    void modifyManuscriptInfo(nlohmann::json js);
+    nlohmann::json modifyManuscriptInfo(nlohmann::json js);
 
     // 删除稿件
-    void deleteManuscript(nlohmann::json js);
+    nlohmann::json deleteManuscript(nlohmann::json js);
 
-    nlohmann::json handle(nlohmann::json h);
+    nlohmann::json dealPost(nlohmann::json h);
 };
 
 #endif // VIDEOSOCIALCONTROL_H

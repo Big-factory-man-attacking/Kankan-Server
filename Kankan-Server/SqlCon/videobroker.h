@@ -2,7 +2,7 @@
 #define VIDEOBROKER_H
 
 #include "relationalbroker.h"
-#include "video.h"
+#include "../Entity/video.h"
 
 class VideoBroker : public RelationalBroker
 {

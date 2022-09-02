@@ -1,13 +1,13 @@
-#include "videosocialcontrol.h"
-#include "netizen.h"
-#include "netizenbroker.h"
+#include "Controller/videosocialcontrol.h"
+#include "Entity/netizen.h"
+#include "SqlCon/netizenbroker.h"
 #include <iostream>
 #include <utility>
 #include <time.h>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
-#include "manuscriptbroker.h"
+#include "SqlCon/manuscriptbroker.h"
 
 extern "C" {
     #include <libavutil/timestamp.h>
@@ -22,7 +22,7 @@ VideoSocialControl::VideoSocialControl()
 }
 
 //注册
-void VideoSocialControl::registerAccount(json js)
+nlohmann::json VideoSocialControl::registerAccount(json js)
 {
     //利用boost/uuid库生成uuid
     boost::uuids::random_generator gen;
@@ -39,6 +39,7 @@ void VideoSocialControl::registerAccount(json js)
     std::string password = js["password"].get<std::string>();
     std::string nickname = js["nickname"].get<std::string>();
     netizenProxy->addNetizen(id, password, nickname);
+    return {};
 }
 
 //登录
@@ -56,7 +57,7 @@ json VideoSocialControl::login(json js)
             auto netizen = NetizenBroker::getInstance()->findNetizenById(id);
 
             info = netizen->init();//初始化稿件（含视频）、粉丝列表、关注列表初始化
-            std::cout << info.dump(4);
+         //   std::cout << info.dump(4);
         } else {
             std::cout << "密码错误" << std::endl;
         }
@@ -111,7 +112,7 @@ json VideoSocialControl::loadVideo(json js)
     return manuscriptInfo;
 }
 
-void VideoSocialControl::focusOn(nlohmann::json js)
+nlohmann::json VideoSocialControl::focusOn(nlohmann::json js)
 {
     std::string fanId = js["fanId"].get<std::string>();
     std::string followerId = js["followerId"].get<std::string>();
@@ -119,32 +120,36 @@ void VideoSocialControl::focusOn(nlohmann::json js)
     auto fanProxy = std::make_shared<NetizenProxy>(fanId);
 
     fanProxy->focusOn(followerId, followerNickname);
+    return {};
 }
 
-void VideoSocialControl::takeOff(json js)
+nlohmann::json VideoSocialControl::takeOff(json js)
 {
     std::string fanId = js["fanId"].get<std::string>();
     std::string followerId = js["followerId"].get<std::string>();
     auto fanProxy = std::make_shared<NetizenProxy>(fanId);
 
     fanProxy->takeOff(followerId);
+    return {};
 }
 
 
-void VideoSocialControl::modifyHeadportrait(json js)
+nlohmann::json VideoSocialControl::modifyHeadportrait(json js)
 {
     std::string netizenId = js["netizenId"].get<std::string>();
     std::string newHeadportrait = js["newHeadportrait"].get<std::string>();
     auto netizenProxy = std::make_shared<NetizenProxy>(netizenId);
     netizenProxy->modifyHeadportrait(newHeadportrait);
+    return {};
 }
 
-void VideoSocialControl::modifyNickname(json js)
+nlohmann::json VideoSocialControl::modifyNickname(json js)
 {
     std::string netizenId = js["netizenId"].get<std::string>();
     std::string newNickname = js["newNickname"].get<std::string>();
     auto netizenProxy = std::make_shared<NetizenProxy>(netizenId);
     netizenProxy->modifyNickname(newNickname);
+    return {};
 }
 
 json VideoSocialControl::modifyPassword(json js)
@@ -155,57 +160,68 @@ json VideoSocialControl::modifyPassword(json js)
     auto netizenProxy = std::make_shared<NetizenProxy>(netizenId);
 
     nlohmann::json res;
-    res["flag"] = netizenProxy->modifyPassword(oldPassword, newPassword);
+    if (netizenProxy->modifyPassword(oldPassword, newPassword) == true) {
+        res["flag"] = "1";
+    } else {
+        res["flag"] = "0";
+    }
     return res;
 }
 
 
-void VideoSocialControl::modifyManuscriptInfo(json js)
+nlohmann::json VideoSocialControl::modifyManuscriptInfo(json js)
 {
     std::string netizenId = js["netizenId"].get<std::string>();
     json newManuscriptInfo = js["newManuscriptInfo"];
     auto netizenProxy = std::make_shared<NetizenProxy>(netizenId);
     netizenProxy->modifyManuscriptInfo(newManuscriptInfo);
+    return {};
 }
 
-void VideoSocialControl::deleteManuscript(json js)
+nlohmann::json VideoSocialControl::deleteManuscript(json js)
 {
     std::string netizenId = js["netizenId"].get<std::string>();
     std::string manuscriptId = js["manuscriptId"].get<std::string>();
     auto netizenProxy = std::make_shared<NetizenProxy>(netizenId);
     netizenProxy->deleteManuscript(manuscriptId);
+    return {};
 }
 
-json VideoSocialControl::handle(json h)
+json VideoSocialControl::dealPost(json h)
 {
     std::string s = h["type"].get<std::string>();
     json data = h["data"];
     json res;
     if (s == "register") {
-        registerAccount(data);
+        res = registerAccount(data);
     } else if (s == "login") {
-        res = login(data);
+        res["netizen"] = login(data);
+        if (res["netizen"].empty()) {
+            res["flag"] = "0";
+        } else {
+            res["flag"] = "1";
+        }
     } else if (s == "getSomeVideos") {
         std::cout << "getSomeVideos" << std::endl;
         res = getSomeVideos();
     } else if (s == "loadVideo") {
         res = loadVideo(data);
     } else if (s == "focusOn") {
-        focusOn(data);
+        res = focusOn(data);
     } else if (s == "takeOff") {
         takeOff(data);
     } else if (s == "modifyHeadportrait") {
-        modifyHeadportrait(data);
+        res = modifyHeadportrait(data);
     } else if (s == "modifyNickname") {
-        modifyNickname(data);
+        res = modifyNickname(data);
     } else if (s == "modifyPassword") {
         res = modifyPassword(data);
     } else if (s == "modifyManuscriptInfo") {
-        modifyManuscriptInfo(data);
+        res = modifyManuscriptInfo(data);
     } else {
-        deleteManuscript(data);
+        res = deleteManuscript(data);
     }
-    std::cout << res.dump(4) << std::endl;
+ //   std::cout << res.dump(4) << std::endl;
     return res;
 }
 
