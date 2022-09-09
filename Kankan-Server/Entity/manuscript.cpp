@@ -54,6 +54,13 @@ void Manuscript::addNewComment(std::string &commentId, const std::string &netize
     commentProxy.addNewComment(text, m_id, netizenId);
 }
 
+void Manuscript::deleteComment(std::string &commentId)
+{
+    CommentProxy commentProxy(commentId);
+    commentProxy.deleteComment();   //删除数据库中对应的评论数据
+    _comments.erase(commentId);
+}
+
 void Manuscript::modifyManuscriptInfo(std::string description, std::string title, std::string label,
                                       std::string subarea, bool isOriginal, std::string cover, std::string date)
 {

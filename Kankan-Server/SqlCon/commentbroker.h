@@ -13,7 +13,10 @@ public:
     // 获取评论对象
     // id：评论的id
     std::shared_ptr<Comment> getComment(std::string& id);
+    //添加评论
     void addComment(const std::string &id, const std::string &text, const std::string &manuscriptId, const std::string &netizenId);
+    //删除评论
+    void deleteComment(const std::string& id);
 private:
     CommentBroker();
     static CommentBroker* m_commentBroker;

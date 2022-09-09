@@ -25,3 +25,8 @@ void CommentProxy::addNewComment(const std::string &text, const std::string &man
     CommentBroker::getInstance()->addComment(m_id, text, manuscriptId, netizenId);
 
 }
+
+void CommentProxy::deleteComment()
+{
+    CommentBroker::getInstance()->deleteComment(m_id);
+}

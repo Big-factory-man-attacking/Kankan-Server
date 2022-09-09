@@ -17,6 +17,7 @@ public:
     // id：对应评论的id
     std::string getCommentInfo(std::string id);
     void addNewComment(const std::string &text, const std::string &manuscriptId, const std::string &netizenId);
+    void deleteComment();
 private:
     std::string m_id;
     std::shared_ptr<Comment> m_comment;

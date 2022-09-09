@@ -39,6 +39,12 @@ void CommentBroker::addComment(const std::string &id, const std::string &text, c
     insert(sql);
 }
 
+void CommentBroker::deleteComment(const std::string &id)
+{
+    std::string sql = "delete from comment where comment_id = '" + id + "'";
+    Delete(sql);
+}
+
 CommentBroker::CommentBroker()
 {
 

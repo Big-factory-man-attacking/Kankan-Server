@@ -199,6 +199,15 @@ nlohmann::json VideoSocialControl::commentManuscript(nlohmann::json js)
     return {};
 }
 
+nlohmann::json VideoSocialControl::deleteComment(nlohmann::json js)
+{
+    std::string manuscriptId = js["manuscriptId"].get<std::string>();
+    std::string commentId = js["commentId"].get<std::string>();
+    auto manuscriptProxy = std::make_shared<ManuscriptProxy>(manuscriptId);
+    manuscriptProxy->deleteComment(commentId);
+    return {};
+}
+
 json VideoSocialControl::dealPost(json h)
 {
     std::string s = h["type"].get<std::string>();
@@ -232,6 +241,8 @@ json VideoSocialControl::dealPost(json h)
         res = modifyManuscriptInfo(data);
     } else if (s == "commentManuscript") {
         res = commentManuscript(data);
+    } else if (s == "deleteComment") {
+        res = deleteComment(data);
     } else if (s == ""){
         res = deleteManuscript(data);
     }

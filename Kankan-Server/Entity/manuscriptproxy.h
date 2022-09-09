@@ -28,6 +28,7 @@ public:
 
     //添加评论
     void addNewComment(std::string& commentId, const std::string& netizenId, const std::string& text);
+    void deleteComment(std::string& commentId);
 
     ~ManuscriptProxy();
 private:
