@@ -23,6 +23,8 @@ public:
 
     //获取稿件的数据
     nlohmann::json getManuscriptInfo();
+    //添加评论
+    void addNewComment(std::string& commentId, const std::string& netizenId, const std::string& text);
 
     // 修改稿件信息
     void modifyManuscriptInfo(std::string description, std::string title, std::string label, std::string subarea,

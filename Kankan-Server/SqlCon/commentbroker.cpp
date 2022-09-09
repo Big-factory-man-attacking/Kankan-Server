@@ -33,6 +33,12 @@ std::shared_ptr<Comment> CommentBroker::getComment(std::string &id)
     return comment;
 }
 
+void CommentBroker::addComment(const std::string &id, const std::string &text, const std::string &manuscriptId, const std::string &netizenId)
+{
+    std::string sql = "insert into comment values( '" + id + "', '" + text + "', '" + manuscriptId + "','" + netizenId + "');";
+    insert(sql);
+}
+
 CommentBroker::CommentBroker()
 {
 

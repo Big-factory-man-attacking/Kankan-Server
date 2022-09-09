@@ -39,6 +39,7 @@ public:
 
     // 取关
     void takeOff(const std::string& followerId);
+
 private:
     std::string m_id;
     std::shared_ptr<Netizen> m_netizen;

@@ -47,6 +47,13 @@ nlohmann::json Manuscript::getManuscriptInfo()
     return manuscriptInfo;
 }
 
+void Manuscript::addNewComment(std::string &commentId, const std::string &netizenId, const std::string &text)
+{
+    CommentProxy commentProxy(commentId);
+    _comments.insert(std::make_pair(commentId, commentProxy));
+    commentProxy.addNewComment(text, m_id, netizenId);
+}
+
 void Manuscript::modifyManuscriptInfo(std::string description, std::string title, std::string label,
                                       std::string subarea, bool isOriginal, std::string cover, std::string date)
 {

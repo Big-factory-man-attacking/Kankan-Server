@@ -25,10 +25,9 @@ public:
     int setNonBlocking(int fd);
 
     void dealRead(int fd);
-    void dealWrite(int fd);
 
     void onRead(int fd);
-    void onWrite(int fd);
+    void onListen(int fd);
 
 private:
     char readBuffer[1024];

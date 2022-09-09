@@ -28,8 +28,6 @@ void Server::start()
                 dealListen(sockfd);
             } else if (event[i].events & EPOLLIN) {
                 dealRead(event[i].data.fd);
-            } else if (event[i].events & EPOLLOUT) {
-            //    dealWrite(event[i].data.fd);
             }
         }
     }
@@ -71,16 +69,7 @@ void Server::dealListen(int listenfd)
     if (listenfd < 0) {
         std::cout << "" << std::endl;   //应该要从epoll事件表中删除,并关闭监听套接字，
     }
-
-    struct sockaddr_in cliaddr;
-    socklen_t clientLength = sizeof(cliaddr);
-
-    int fd = accept(listenfd, (struct sockaddr*)&cliaddr, &clientLength);
-    if (fd < 0) {
-        std::cout << "accpet error" << std::endl;
-    }
-
-    addClient(fd);
+     m_threadpool->AddTask(std::bind(&Server::onListen, this, listenfd));
 }
 
 void Server::addClient(int connfd)
@@ -107,13 +96,6 @@ void Server::dealRead(int fd)
     m_threadpool->AddTask(std::bind(&Server::onRead, this, fd));
 }
 
-void Server::dealWrite(int fd)
-{
-    if (fd < 0) {}
-//    m_threadpool->enqueue([this, fd]{this->onRead(fd);});
-    m_threadpool->AddTask(std::bind(&Server::onWrite, this, fd));
-}
-
 void Server::onRead(int fd)
 {
     std::cout << "event trigger once\n";
@@ -125,18 +107,18 @@ void Server::onRead(int fd)
             if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
                 std::cout << "read later" << std::endl;
             }
+            m_epoller->Delfd(fd);
             close(fd);
             break;
         } else if (ret == 0) {
             std::cout << "read error" << std::endl;
+            m_epoller->Delfd(fd);
             close(fd);
         } else {
             nlohmann::json json = nlohmann::json::parse(std::string(readBuffer));
 
-            std::cout << "reveive" << json.dump() << std::endl;
-
             nlohmann::json j = _users[fd].dealPost(json);
-            std::cout << j.dump(4) << "123" << std::endl;
+            std::cout << j.dump() << std::endl;
             if (!j.empty()) {
                 send(fd, j.dump().data(), strlen(j.dump().data()), 0);
             }
@@ -144,9 +126,15 @@ void Server::onRead(int fd)
     }
 }
 
-void Server::onWrite(int fd)
+void Server::onListen(int listenfd)
 {
+    struct sockaddr_in cliaddr;
+    socklen_t clientLength = sizeof(cliaddr);
 
+    int fd = accept(listenfd, (struct sockaddr*)&cliaddr, &clientLength);
+    if (fd < 0) {
+        std::cout << "accpet error" << std::endl;
+    }
+
+    addClient(fd);
 }
-
-

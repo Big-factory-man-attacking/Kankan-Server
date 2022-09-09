@@ -26,6 +26,9 @@ public:
     // manuscriptId：稿件id
     void deleteManuscript(const std::string& manuscriptId);
 
+    //添加评论
+    void addNewComment(std::string& commentId, const std::string& netizenId, const std::string& text);
+
     ~ManuscriptProxy();
 private:
     std::string m_id;

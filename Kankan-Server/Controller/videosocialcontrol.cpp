@@ -160,11 +160,7 @@ json VideoSocialControl::modifyPassword(json js)
     auto netizenProxy = std::make_shared<NetizenProxy>(netizenId);
 
     nlohmann::json res;
-    if (netizenProxy->modifyPassword(oldPassword, newPassword) == true) {
-        res["flag"] = "1";
-    } else {
-        res["flag"] = "0";
-    }
+    res["flag"] = netizenProxy->modifyPassword(oldPassword, newPassword);
     return res;
 }
 
@@ -184,6 +180,22 @@ nlohmann::json VideoSocialControl::deleteManuscript(json js)
     std::string manuscriptId = js["manuscriptId"].get<std::string>();
     auto netizenProxy = std::make_shared<NetizenProxy>(netizenId);
     netizenProxy->deleteManuscript(manuscriptId);
+    return {};
+}
+
+nlohmann::json VideoSocialControl::commentManuscript(nlohmann::json js)
+{
+    //利用boost/uuid库生成uuid
+    boost::uuids::random_generator gen;
+    boost::uuids::uuid  uid = gen();
+    std::string id = to_string(uid);
+
+    std::string netizenId = js["netizenId"].get<std::string>();
+    std::string manuscriptId = js["manuscriptId"].get<std::string>();
+    auto manuscriptProxy = std::make_shared<ManuscriptProxy>(manuscriptId);
+    std::string text =  js["text"].get<std::string>();
+
+    manuscriptProxy->addNewComment(id, netizenId, text);
     return {};
 }
 
@@ -218,7 +230,9 @@ json VideoSocialControl::dealPost(json h)
         res = modifyPassword(data);
     } else if (s == "modifyManuscriptInfo") {
         res = modifyManuscriptInfo(data);
-    } else {
+    } else if (s == "commentManuscript") {
+        res = commentManuscript(data);
+    } else if (s == ""){
         res = deleteManuscript(data);
     }
  //   std::cout << res.dump(4) << std::endl;

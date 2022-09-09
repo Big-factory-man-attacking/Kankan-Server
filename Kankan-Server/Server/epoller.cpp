@@ -36,9 +36,6 @@ void epoller::Addfd(int fd)
 
 void epoller::Delfd(int fd)
 {
-    if (fd < 0) {
-
-    }
     epoll_ctl(m_epollfd, EPOLL_CTL_DEL, fd, nullptr);
 }
 

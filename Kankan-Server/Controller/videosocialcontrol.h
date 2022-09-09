@@ -53,7 +53,11 @@ public:
     // 删除稿件
     nlohmann::json deleteManuscript(nlohmann::json js);
 
+    //评论稿件
+    nlohmann::json commentManuscript(nlohmann::json js);
+
     nlohmann::json dealPost(nlohmann::json h);
+
 };
 
 #endif // VIDEOSOCIALCONTROL_H

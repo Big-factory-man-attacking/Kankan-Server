@@ -19,3 +19,9 @@ std::string CommentProxy::getCommentInfo(std::string id)
 
     return m_comment->getText();
 }
+
+void CommentProxy::addNewComment(const std::string &text, const std::string &manuscriptId, const std::string &netizenId)
+{
+    CommentBroker::getInstance()->addComment(m_id, text, manuscriptId, netizenId);
+
+}

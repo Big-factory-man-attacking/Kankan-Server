@@ -91,3 +91,4 @@ void NetizenProxy::takeOff(const std::string &followerId)
     m_netizen->takeOff(followerId);
     NetizenBroker::getInstance()->takeOff(m_id, followerId);
 }
+

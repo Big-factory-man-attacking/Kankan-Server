@@ -49,6 +49,14 @@ void ManuscriptProxy::deleteManuscript(const std::string &manuscriptId)
     ManuscriptBroker::getInstance()->deleteManuscript(manuscriptId);
 }
 
+void ManuscriptProxy::addNewComment(std::string &commentId, const std::string &netizenId, const std::string &text)
+{
+    if (m_manuscript == nullptr)
+        m_manuscript = ManuscriptBroker::getInstance()->getManuscript(m_id);
+    m_manuscript->addNewComment(commentId, netizenId, text);
+}
+
+
 ManuscriptProxy::~ManuscriptProxy()
 {
 
