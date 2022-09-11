@@ -27,7 +27,6 @@ public:
     void dealRead(int fd);
 
     void onRead(int fd);
-    void onListen(int fd);
 
 private:
     char readBuffer[1024];

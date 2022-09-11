@@ -69,7 +69,16 @@ void Server::dealListen(int listenfd)
     if (listenfd < 0) {
         std::cout << "" << std::endl;   //应该要从epoll事件表中删除,并关闭监听套接字，
     }
-     m_threadpool->AddTask(std::bind(&Server::onListen, this, listenfd));
+
+    struct sockaddr_in cliaddr;
+    socklen_t clientLength = sizeof(cliaddr);
+
+    int fd = accept(listenfd, (struct sockaddr*)&cliaddr, &clientLength);
+    if (fd < 0) {
+        std::cout << "accpet error" << std::endl;
+    }
+
+    addClient(fd);
 }
 
 void Server::addClient(int connfd)
@@ -117,24 +126,11 @@ void Server::onRead(int fd)
         } else {
             nlohmann::json json = nlohmann::json::parse(std::string(readBuffer));
 
+            std::cout << json.dump(4) << std::endl;
             nlohmann::json j = _users[fd].dealPost(json);
-            std::cout << j.dump() << std::endl;
             if (!j.empty()) {
                 send(fd, j.dump().data(), strlen(j.dump().data()), 0);
             }
         }
     }
-}
-
-void Server::onListen(int listenfd)
-{
-    struct sockaddr_in cliaddr;
-    socklen_t clientLength = sizeof(cliaddr);
-
-    int fd = accept(listenfd, (struct sockaddr*)&cliaddr, &clientLength);
-    if (fd < 0) {
-        std::cout << "accpet error" << std::endl;
-    }
-
-    addClient(fd);
 }

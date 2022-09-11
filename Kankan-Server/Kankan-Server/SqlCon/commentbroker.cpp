@@ -15,6 +15,8 @@ CommentBroker *CommentBroker::getInstance()
     return m_commentBroker;
 }
 
+
+
 std::shared_ptr<Comment> CommentBroker::getComment(std::string &id)
 {
     //检索数据库，创建对象
@@ -33,15 +35,28 @@ std::shared_ptr<Comment> CommentBroker::getComment(std::string &id)
     return comment;
 }
 
+std::string CommentBroker::getNetizen(std::string &id)
+{
+    std::string sql = "select user_id from comment where comment_id = '" + id + "'";
+    std::shared_ptr<sql::ResultSet> res = query(sql);
+    std::string parameter;
+    while (res->next()) {
+        parameter = res->getString(1).c_str();
+    }
+    return parameter;
+}
+
 void CommentBroker::addComment(const std::string &id, const std::string &text, const std::string &manuscriptId, const std::string &netizenId)
 {
     std::string sql = "insert into comment values( '" + id + "', '" + text + "', '" + manuscriptId + "','" + netizenId + "');";
     insert(sql);
 }
 
-void CommentBroker::deleteComment(const std::string &id)
+void CommentBroker::deleteComment(const std::string &commentId)
 {
-    std::string sql = "delete from comment where comment_id = '" + id + "'";
+    std::string sql = "delete from comment where comment_id = '" + commentId + "'";
+    std::cout << "删除评论sql:" << sql << std::endl;
+
     Delete(sql);
 }
 

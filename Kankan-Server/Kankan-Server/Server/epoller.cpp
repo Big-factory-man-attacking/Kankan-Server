@@ -25,7 +25,7 @@ void epoller::Addfd(int fd)
     epoll_event event;
 
     event.data.fd = fd;
-    event.events = EPOLLIN | EPOLLET;
+    event.events = EPOLLIN | EPOLLET | EPOLLONESHOT;
 
     if (fd < 0) {
 

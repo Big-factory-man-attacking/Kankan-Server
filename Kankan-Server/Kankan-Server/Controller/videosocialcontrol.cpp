@@ -96,7 +96,7 @@ json VideoSocialControl::getSomeVideos()
         json netizenInfo = netizen.second.getInfo(netizen.first);
         manuscriptInfos["netizenInfo"].push_back(netizenInfo);
     }
-    std::cout << manuscriptInfos.dump(4) << std::endl;
+//    std::cout << manuscriptInfos.dump(4) << std::endl;
     return manuscriptInfos;
 }
 
@@ -108,6 +108,7 @@ json VideoSocialControl::loadVideo(json js)
 
     //读取稿件的数据
     json manuscriptInfo = manuscript->getManuscriptInfo();
+
 
     return manuscriptInfo;
 }
@@ -205,6 +206,7 @@ nlohmann::json VideoSocialControl::deleteComment(nlohmann::json js)
     std::string commentId = js["commentId"].get<std::string>();
     auto manuscriptProxy = std::make_shared<ManuscriptProxy>(manuscriptId);
     manuscriptProxy->deleteComment(commentId);
+
     return {};
 }
 
@@ -241,12 +243,14 @@ json VideoSocialControl::dealPost(json h)
         res = modifyManuscriptInfo(data);
     } else if (s == "commentManuscript") {
         res = commentManuscript(data);
+    } else if (s == "deleteManuscript"){
+        res = deleteManuscript(data);
     } else if (s == "deleteComment") {
         res = deleteComment(data);
-    } else if (s == ""){
-        res = deleteManuscript(data);
+    } else if (s == "loadVideo") {
+        res = loadVideo(data);
     }
- //   std::cout << res.dump(4) << std::endl;
+    std::cout << res.dump(4) << std::endl;
     return res;
 }
 

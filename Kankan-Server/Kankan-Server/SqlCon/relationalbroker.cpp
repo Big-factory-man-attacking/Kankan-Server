@@ -12,7 +12,7 @@ RelationalBroker::RelationalBroker()
 
         //Configure Connection
         sql::SQLString url("jdbc:mariadb://127.0.0.1:3306/Kankan");
-        sql::Properties properties({{"user", "root"}, {"password", "200909"}});
+        sql::Properties properties({{"user", "root"}, {"password", "root"}});
 
         //建立连接
         conn= std::unique_ptr<sql::Connection>(driver->connect(url, properties));
@@ -43,6 +43,7 @@ void RelationalBroker::insert(std::string sql)
     try {
         std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement(sql));
         stmnt->executeQuery();
+        std::cout << "添加评论" << std::endl;
     } catch (sql::SQLException& e) {
         std::cerr << "Error insert：" << e.what() << std::endl;
     }

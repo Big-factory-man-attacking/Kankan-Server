@@ -38,7 +38,7 @@ nlohmann::json Manuscript::getManuscriptInfo()
 
     for (auto& comment: _comments) {
         json com;
-        com["text"] = comment.second.getCommentInfo(comment.first);
+        com = comment.second.getCommentInfo(comment.first);
         manuscriptInfo["comments"].push_back(com);
     }
     if (_comments.size() == 0) manuscriptInfo["comments"] = "";
@@ -54,11 +54,15 @@ void Manuscript::addNewComment(std::string &commentId, const std::string &netize
     commentProxy.addNewComment(text, m_id, netizenId);
 }
 
-void Manuscript::deleteComment(std::string &commentId)
+void Manuscript::deleteComment(const std::string &commentId)
 {
-    CommentProxy commentProxy(commentId);
-    commentProxy.deleteComment();   //删除数据库中对应的评论数据
-    _comments.erase(commentId);
+    for (auto it = _comments.begin(); it != _comments.end(); ++it) {
+        if (it->first == commentId) {
+            it->second.deleteComment(commentId);
+            _comments.erase(it);
+            break;
+        }
+    }
 }
 
 void Manuscript::modifyManuscriptInfo(std::string description, std::string title, std::string label,

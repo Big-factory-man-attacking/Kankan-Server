@@ -7,10 +7,12 @@
 #include "json.hpp"
 
 class Netizen;
+
 class VideoSocialControl
 {
 public:
     VideoSocialControl();
+
     // 注册
     // password:用户设置的密码
     nlohmann::json registerAccount(nlohmann::json js);
@@ -54,7 +56,6 @@ public:
     //评论稿件
     nlohmann::json commentManuscript(nlohmann::json js);
 
-    //删除评论
     nlohmann::json deleteComment(nlohmann::json js);
 
     nlohmann::json dealPost(nlohmann::json h);

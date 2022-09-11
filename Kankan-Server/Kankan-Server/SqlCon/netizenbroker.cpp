@@ -59,7 +59,7 @@ std::shared_ptr<Netizen> NetizenBroker::findNetizenById(const std::string& id)
     //查找数据库，找出用户的nickname
     std::string nickname, headportrait;
 
-    std::string sql = "select nickname, headportrait from user where user_id = '" + id + "'";
+    std::string sql = "select nickname, headPortrait from user where user_id = '" + id + "'";
     std::shared_ptr<sql::ResultSet> res = query(sql);
     while (res->next()) {
         nickname = res->getString(1).c_str();
