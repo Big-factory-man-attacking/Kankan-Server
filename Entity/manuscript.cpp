@@ -34,6 +34,7 @@ nlohmann::json Manuscript::getManuscriptInfo()
     manuscriptInfo["isOriginal"] = std::to_string(m_isOriginal);
     manuscriptInfo["cover"] = m_cover;
     manuscriptInfo["date"] = m_date;
+    manuscriptInfo["videoId"] = m_video.first;
     manuscriptInfo["videoAddress"] = m_video.second.getVideoInfo(m_video.first);
 
     for (auto& comment: _comments) {

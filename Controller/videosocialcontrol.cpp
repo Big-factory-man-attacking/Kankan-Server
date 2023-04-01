@@ -24,6 +24,7 @@ VideoSocialControl::VideoSocialControl()
 //注册
 nlohmann::json VideoSocialControl::registerAccount(json js)
 {
+    std::cout << "-------注册帐号------\n";
     //利用boost/uuid库生成uuid
     boost::uuids::random_generator gen;
     boost::uuids::uuid  uid = gen();
@@ -45,6 +46,7 @@ nlohmann::json VideoSocialControl::registerAccount(json js)
 //登录
 json VideoSocialControl::login(json js)
 {
+    std::cout << "-------登录帐号------\n";
     std::string id = js["id"].get<std::string>();
     std::string key = js["key"].get<std::string>();
 
@@ -69,6 +71,7 @@ json VideoSocialControl::login(json js)
 
 json VideoSocialControl::getSomeVideos()
 {
+    std::cout << "-------获取网民所有稿件------\n";
     //获取一些稿件的id
     std::map<std::string, std::string> manuscriptIds;
     manuscriptIds = ManuscriptBroker::getInstance()->getManuscripts();
@@ -91,18 +94,22 @@ json VideoSocialControl::getSomeVideos()
 
 json VideoSocialControl::loadVideo(json js)
 {
+    std::cout << "-------播放视频------\n";
     std::string id = js["id"].get<std::string>();
+    std::cout << js.dump(4) << std::endl;
     //首先找到对应的稿件
     auto manuscript = ManuscriptBroker::getInstance()->getManuscript(id);
 
     //读取稿件的数据
     json manuscriptInfo = manuscript->getManuscriptInfo();
 //IVVGS8
+    std::cout << manuscriptInfo.dump(4) << std::endl;
     return manuscriptInfo;
 }
 
 nlohmann::json VideoSocialControl::focusOn(nlohmann::json js)
 {
+    std::cout << "-------关注up主------\n";
     std::string fanId = js["fanId"].get<std::string>();
     std::string followerId = js["followerId"].get<std::string>();
     std::string followerNickname = js["followerNickname"].get<std::string>();
@@ -112,8 +119,9 @@ nlohmann::json VideoSocialControl::focusOn(nlohmann::json js)
     return {};
 }
 
-nlohmann::json VideoSocialControl::takeOff(json js)
+json VideoSocialControl::takeOff(json js)
 {
+    std::cout << "-------取消关注------\n";
     std::string fanId = js["fanId"].get<std::string>();
     std::string followerId = js["followerId"].get<std::string>();
     auto fanProxy = std::make_shared<NetizenProxy>(fanId);
@@ -123,8 +131,9 @@ nlohmann::json VideoSocialControl::takeOff(json js)
 }
 
 
-nlohmann::json VideoSocialControl::modifyHeadportrait(json js)
+json VideoSocialControl::modifyHeadportrait(json js)
 {
+    std::cout << "-------修改头像------\n";
     std::string netizenId = js["netizenId"].get<std::string>();
     std::string newHeadportrait = js["newHeadportrait"].get<std::string>();
     auto netizenProxy = std::make_shared<NetizenProxy>(netizenId);
@@ -132,8 +141,9 @@ nlohmann::json VideoSocialControl::modifyHeadportrait(json js)
     return {};
 }
 
-nlohmann::json VideoSocialControl::modifyNickname(json js)
+json VideoSocialControl::modifyNickname(json js)
 {
+    std::cout << "-------修改网名------\n";
     std::string netizenId = js["netizenId"].get<std::string>();
     std::string newNickname = js["newNickname"].get<std::string>();
     auto netizenProxy = std::make_shared<NetizenProxy>(netizenId);
@@ -143,6 +153,7 @@ nlohmann::json VideoSocialControl::modifyNickname(json js)
 
 json VideoSocialControl::modifyPassword(json js)
 {
+    std::cout << "-------修改密码------\n";
     std::string netizenId = js["netizenId"].get<std::string>();
     std::string oldPassword = js["oldPassword"].get<std::string>();
     std::string newPassword = js["newPassword"].get<std::string>();
@@ -154,8 +165,9 @@ json VideoSocialControl::modifyPassword(json js)
 }
 
 
-nlohmann::json VideoSocialControl::modifyManuscriptInfo(json js)
+json VideoSocialControl::modifyManuscriptInfo(json js)
 {
+    std::cout << "-------修改稿件信息------\n";
     std::string netizenId = js["netizenId"].get<std::string>();
     json newManuscriptInfo = js["newManuscriptInfo"];
     auto netizenProxy = std::make_shared<NetizenProxy>(netizenId);
@@ -163,8 +175,9 @@ nlohmann::json VideoSocialControl::modifyManuscriptInfo(json js)
     return {};
 }
 
-nlohmann::json VideoSocialControl::deleteManuscript(json js)
+json VideoSocialControl::deleteManuscript(json js)
 {
+    std::cout << "-------删除稿件------\n";
     std::string netizenId = js["netizenId"].get<std::string>();
     std::string manuscriptId = js["manuscriptId"].get<std::string>();
     auto netizenProxy = std::make_shared<NetizenProxy>(netizenId);
@@ -172,8 +185,9 @@ nlohmann::json VideoSocialControl::deleteManuscript(json js)
     return {};
 }
 
-nlohmann::json VideoSocialControl::commentManuscript(nlohmann::json js)
+json VideoSocialControl::commentManuscript(json js)
 {
+    std::cout << "-------发布评论------\n";
     //利用boost/uuid库生成uuid
     boost::uuids::random_generator gen;
     boost::uuids::uuid  uid = gen();
@@ -188,8 +202,9 @@ nlohmann::json VideoSocialControl::commentManuscript(nlohmann::json js)
     return {};
 }
 
-nlohmann::json VideoSocialControl::deleteComment(nlohmann::json js)
+json VideoSocialControl::deleteComment(json js)
 {
+    std::cout << "-------删除评论------\n";
     std::string manuscriptId = js["manuscriptId"].get<std::string>();
     std::string commentId = js["commentId"].get<std::string>();
     auto manuscriptProxy = std::make_shared<ManuscriptProxy>(manuscriptId);
@@ -197,25 +212,34 @@ nlohmann::json VideoSocialControl::deleteComment(nlohmann::json js)
     return {};
 }
 
-nlohmann::json VideoSocialControl::publishManuscript(nlohmann::json js)
+json VideoSocialControl::publishManuscript(json js)
 {
-    //利用boost/uuid库生成uuid作为稿件id
-    boost::uuids::random_generator gen;
-    boost::uuids::uuid uid = gen();
-    std::string manuscriptId = to_string(uid);
-
-    //利用boost/uuid库生成uuid作为稿件id
-    boost::uuids::random_generator gen1;
-    boost::uuids::uuid uid1 = gen1();
-    std::string videoId = to_string(uid1);
-
-    std::cout << manuscriptId << " " << videoId << std::endl;
-
+    std::cout << "-------发布稿件------\n";
     std::string netizenId = js["netizenId"].get<std::string>();
+    std::string videoId = js["videoId"].get<std::string>();
+    std::string manuscriptId = js["manuscriptId"].get<std::string>();
+    std::cout << netizenId << "\t" << videoId << "\t" << manuscriptId << std::endl;
     //找到网民的代理
     auto netizenProxy = std::make_shared<NetizenProxy>(netizenId);
     nlohmann::json json = netizenProxy->publishManuscript(js, manuscriptId, videoId);
     return json;
+}
+
+json VideoSocialControl::genVideoIdAndManuscriptId()
+{
+    std::cout << "-------生成视频Id和稿件Id------\n";
+    boost::uuids::random_generator gen;
+    boost::uuids::uuid uid = gen();
+    std::string videoId = to_string(uid);
+
+    boost::uuids::random_generator gen1;
+    boost::uuids::uuid uid1 = gen1();
+    std::string manuscriptId = to_string(uid1);
+
+    json info;
+    info["manuscriptId"] = manuscriptId;
+    info["videoId"] = videoId;
+    return info;
 }
 
 json VideoSocialControl::dealPost(json h)
@@ -259,6 +283,8 @@ json VideoSocialControl::dealPost(json h)
         res = publishManuscript(data);
     } else if (s == "deleteManuscript"){
         res = deleteManuscript(data);
+    } else if (s == "genVideoIdAndManuscriptId") {
+        res = genVideoIdAndManuscriptId();
     }
  //   std::cout << res.dump(4) << std::endl;
     return res;

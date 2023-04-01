@@ -62,6 +62,11 @@ public:
     //发布稿件
     nlohmann::json publishManuscript(nlohmann::json js);
 
+    //发布稿件前需要生成稿件的id
+    nlohmann::json genVideoIdAndManuscriptId();
+
+
+
 };
 
 #endif // VIDEOSOCIALCONTROL_H

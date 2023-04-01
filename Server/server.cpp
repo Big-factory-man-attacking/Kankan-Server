@@ -77,7 +77,7 @@ void Server::addClient(int connfd)
     _users[connfd] = VideoSocialControl();
     m_epoller->Addfd(connfd);
     setNonBlocking(connfd);
-    std::cout << "成功添加新的客户端" << std::endl;
+    std::cout << "成功添加新的客户端!!" << std::endl;
 }
 
 int Server::setNonBlocking(int fd)
@@ -116,66 +116,14 @@ void Server::onRead(int fd)
         } else {
             std::cout << readBuffer << std::endl;
             nlohmann::json json = nlohmann::json::parse(std::string(readBuffer));
-            std::cout << json.dump() << std::endl;
-            std::string msg = "sendVideo";
-            if (json["type"] == msg) {
-                std::string s = json["data"]["videoLen"];
-                std::string videoName = json["data"]["videoName"];
-                long videoSize = atoi(s.c_str());
-                std::cout << videoSize << std::endl;
-                //先将套接字从epoll中移除，避免后续套接字接收音视频数据时触发可读事件，而是直接使用recv进行处理
-                m_epoller->Delfd(fd);
-                onReadVideo(fd, videoSize, videoName);
-            } else {
-                nlohmann::json j = _users[fd].dealPost(json);
-                std::cout << j.dump(4) << std::endl;
-                if (!j.empty()) {
-                    send(fd, j.dump().data(), strlen(j.dump().data()), 0);
-                }
+            nlohmann::json j = _users[fd].dealPost(json);
+            std::cout << j.dump(4) << std::endl;
+            if (!j.empty()) {
+                send(fd, j.dump().data(), strlen(j.dump().data()), 0);
             }
         }
     }
 }
-
-void Server::onReadVideo(int fd, long videoSize, const std::string& videoName)
-{
-    char videoBuffer[4096];
-    FILE *fp;
-    std::string path = "/opt/live/mediaServer/music/" + videoName;
-    if((fp = fopen(path.data(),"wb") ) == nullptr )
-    {
-        printf("File.\n");
-        exit(1);
-    }
-
-    long n, totalSize = 0;
-    std::cout << "start read video\n";
-    while(1){
-        if (totalSize >= videoSize) {
-            std::cout << "video data read success\n";
-            break;
-        }
-        bzero(videoBuffer,sizeof(videoBuffer));
-        n = recv(fd, videoBuffer, 4096, 0);
-
-        totalSize += n;
-
-        fwrite(videoBuffer, 1, n, fp);   //将读到的数据写入文件
-        fflush(fp);
-    }
-    fclose(fp);
-    std::cout << totalSize << std::endl;
-
-    nlohmann::json json;
-    json["videoAddress"] = "rtsp://192.168.43.150/music/" + videoName;
-    std::cout << json.dump().data() << std::endl;
-    n = send(fd, json.dump().data(), strlen(json.dump().data()), 0);
-    if (n <= 0) std::cerr << "write addr error\n";
-    m_epoller->Addfd(fd);
-    setNonBlocking(fd);
-}
-
-
 
 void Server::onListen(int listenfd)
 {

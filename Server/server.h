@@ -27,7 +27,7 @@ public:
     void dealRead(int fd);
 
     void onRead(int fd);
-    void onReadVideo(int fd, long videoSize, const std::string& videoName);
+  //  void onReadVideo(int fd, long videoSize, const std::string& videoName);
     void onListen(int fd);
 
 private:
