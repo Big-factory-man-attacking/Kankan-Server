@@ -20,7 +20,7 @@ Server::Server(int port, int threadNums) : m_port(port), m_epoller(new epoller()
 void Server::start()
 {
     while (1) {
-        int fd = m_epoller->Wait();
+        int fd = m_epoller->Wait();    //返回有事件发生的套接字的个数
         epoll_event* event = m_epoller->getEvents();
         for (int i = 0; i < fd; i++) {
             int sockfd = event[i].data.fd;
@@ -32,6 +32,17 @@ void Server::start()
         }
     }
 }
+
+void Server::dealListen(int listenfd)
+{
+     m_threadpool->AddTask(std::bind(&Server::onListen, this, listenfd));
+}
+
+void Server::dealRead(int fd)
+{
+    m_threadpool->AddTask(std::bind(&Server::onRead, this, fd));
+}
+
 
 void Server::initSocket()
 {
@@ -64,13 +75,6 @@ void Server::initSocket()
     setNonBlocking(listenfd);
 }
 
-void Server::dealListen(int listenfd)
-{
-    if (listenfd < 0) {
-        std::cout << "" << std::endl;   //应该要从epoll事件表中删除,并关闭监听套接字，
-    }
-     m_threadpool->AddTask(std::bind(&Server::onListen, this, listenfd));
-}
 
 void Server::addClient(int connfd)
 {
@@ -89,11 +93,6 @@ int Server::setNonBlocking(int fd)
     return old_option;
 }
 
-void Server::dealRead(int fd)
-{
-    if (fd < 0) {}
-    m_threadpool->AddTask(std::bind(&Server::onRead, this, fd));
-}
 
 void Server::onRead(int fd)
 {
@@ -115,6 +114,7 @@ void Server::onRead(int fd)
             close(fd);
         } else {
             std::cout << readBuffer << std::endl;
+            //将收到的数据转换为json
             nlohmann::json json = nlohmann::json::parse(std::string(readBuffer));
             nlohmann::json j = _users[fd].dealPost(json);
             std::cout << j.dump(4) << std::endl;

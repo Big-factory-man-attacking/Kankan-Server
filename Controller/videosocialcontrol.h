@@ -65,6 +65,9 @@ public:
     //发布稿件前需要生成稿件的id
     nlohmann::json genVideoIdAndManuscriptId();
 
+    //加载稿件信息
+    nlohmann::json loadManuscript(nlohmann::json js);
+
 
 
 };

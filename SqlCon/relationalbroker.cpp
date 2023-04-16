@@ -22,11 +22,6 @@ RelationalBroker::RelationalBroker()
     }
 }
 
-RelationalBroker::~RelationalBroker()
-{
-    conn->close();
-}
-
 std::shared_ptr<sql::ResultSet> RelationalBroker::query(std::string sql)
 {
     try {
@@ -67,3 +62,10 @@ void RelationalBroker::Delete(const std::string &sql)
         std::cerr << "Error delete：" << e.what() << std::endl;
     }
 }
+
+RelationalBroker::~RelationalBroker()
+{
+    conn->close();
+}
+
+

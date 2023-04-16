@@ -82,9 +82,8 @@ nlohmann::json ManuscriptProxy::addManuscript(const nlohmann::json &js, std::str
     ManuscriptBroker::getInstance()->addManuscript(m_id, description, title, label,
                                                           subarea, isOriginal, cover, date, netizenId);
 
-  //  std::string videoAdress = "rtmp://192.168.43.150:/1936/live/" + videoId;
     std::string videoAdress = js["videoAddress"].get<std::string>();
-    VideoBroker::getInstance()->addVideo(videoId, videoAdress, m_id);   //给video表中插入一条数据
+    VideoBroker::getInstance()->addVideo(videoId, videoAdress, m_id);   //给video表中也插入一条数据
 
     return getManuscriptInfo(m_id);
 }

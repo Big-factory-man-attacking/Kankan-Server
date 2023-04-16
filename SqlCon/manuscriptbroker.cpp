@@ -18,7 +18,6 @@ ManuscriptBroker *ManuscriptBroker::getInstance()
 
 std::shared_ptr<Manuscript> ManuscriptBroker::getManuscript(const std::string& id)
 {
-    //检查对象是否存在于缓存中
 
     //检索数据库，创建manuscript对象
     std::string sql = "select * from manuscript where manuscript_id = '" + id + "'";
@@ -37,7 +36,6 @@ std::shared_ptr<Manuscript> ManuscriptBroker::getManuscript(const std::string& i
         parameters.push_back(res->getString(8).c_str());    //发布日期
         std::string i = res->getString(9).c_str();
     }
-
 
     // 找到对应的评论id
     std::vector<std::string> commentIds;

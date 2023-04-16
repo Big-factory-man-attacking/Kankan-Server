@@ -218,7 +218,7 @@ json VideoSocialControl::publishManuscript(json js)
     std::string netizenId = js["netizenId"].get<std::string>();
     std::string videoId = js["videoId"].get<std::string>();
     std::string manuscriptId = js["manuscriptId"].get<std::string>();
-    std::cout << netizenId << "\t" << videoId << "\t" << manuscriptId << std::endl;
+  //  std::cout << netizenId << "\t" << videoId << "\t" << manuscriptId << std::endl;
     //找到网民的代理
     auto netizenProxy = std::make_shared<NetizenProxy>(netizenId);
     nlohmann::json json = netizenProxy->publishManuscript(js, manuscriptId, videoId);
@@ -242,6 +242,15 @@ json VideoSocialControl::genVideoIdAndManuscriptId()
     return info;
 }
 
+nlohmann::json VideoSocialControl::loadManuscript(nlohmann::json js)
+{
+    std::cout << "加载稿件信息\n";
+    std::string manuscriptId = js["manuscriptId"];
+    auto manuscriptProxy = std::make_shared<ManuscriptProxy>(manuscriptId);
+    nlohmann::json json = manuscriptProxy->getManuscriptInfo(manuscriptId);
+    return json;
+}
+
 json VideoSocialControl::dealPost(json h)
 {
     std::string s = h["type"].get<std::string>();
@@ -251,7 +260,6 @@ json VideoSocialControl::dealPost(json h)
         res = registerAccount(data);
     } else if (s == "login") {
         res["netizen"] = login(data);
-
         //用于防止密码错误而导致netizen数据为空，然后不返回数据
         if (res["netizen"].empty()) {
             res["flag"] = "0";
@@ -285,8 +293,9 @@ json VideoSocialControl::dealPost(json h)
         res = deleteManuscript(data);
     } else if (s == "genVideoIdAndManuscriptId") {
         res = genVideoIdAndManuscriptId();
+    } else if (s == "loadManuscript") {
+        res = loadManuscript(data);
     }
- //   std::cout << res.dump(4) << std::endl;
     return res;
 }
 
